@@ -86,3 +86,14 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - NetflixGPT
   - Search Bar
   - Movie Suggestions
+
+# Netflix GPT
+
+- Create React App
+- Configured Tailwind css
+- Header
+- Routing of App
+- Login Form
+- Sign Up Form
+- Form Validation
+- useRef Hook
