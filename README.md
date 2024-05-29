@@ -97,3 +97,9 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - Sign Up Form
 - Form Validation
 - useRef Hook
+- firebase setup
+- Deploying our app to prod
+- Create SignUp User Account
+- Used firebase to sign up and sign in user
+- Installed redux using npm i -D @reduxjs/toolkit
+- Configured our store to save user details

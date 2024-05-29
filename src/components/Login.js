@@ -1,8 +1,13 @@
 import React, { useRef, useState } from 'react'
 import Header from './Header'
 import { checkValidData } from '../utils/validate';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { AUTH } from '../utils/firebase';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
+
     // Reference Variables
     const email = useRef(null);
     const password = useRef(null);
@@ -19,7 +24,40 @@ const Login = () => {
         event.preventDefault();
         const invalidMessage = checkValidData(email.current.value, password.current.value);
         setErrorMessage(invalidMessage);
-        // redirect to browser route
+        if (invalidMessage) return;
+
+        // signUp/ signIn Logic
+        if (!isSignInForm) {
+            // sign Up
+            createUserWithEmailAndPassword(AUTH, email.current.value, password.current.value)
+                .then((userCredential) => {
+                    // Signed up 
+                    const user = userCredential.user;
+                    console.log("Signed Up");
+                    console.log(user);
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setErrorMessage(errorCode + "-" + errorMessage);
+                });
+        } else {
+            // sign in
+            signInWithEmailAndPassword(AUTH, email.current.value, password.current.value)
+                .then((userCredential) => {
+                    // Signed in 
+                    const user = userCredential.user;
+                    console.log("Signed In");
+                    console.log(user);
+                    navigate("/browse");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setErrorMessage(errorCode + "-" + errorMessage);
+                    navigate("/");
+                });
+        }
     }
 
     return (
@@ -48,8 +86,8 @@ const Login = () => {
                                 {isSignInForm ? "Sign In" : "Sign Up"}
                             </button>
                             <div className="cursor-pointer">
-                                {!isSignInForm && <span className="m-6 p-2">New to Netflix? <strong onClick={toggleSignInForm}>Sign up now.</strong></span>}
-                                {isSignInForm && <span className="m-6 p-2">Already Registered? <strong onClick={toggleSignInForm}>Sign In now.</strong></span>}
+                                {isSignInForm && <span className="m-6 p-2">New to Netflix? <strong onClick={toggleSignInForm}>Sign up now.</strong></span>}
+                                {!isSignInForm && <span className="m-6 p-2">Already Registered? <strong onClick={toggleSignInForm}>Sign In now.</strong></span>}
                             </div>
                         </div>
                     </div>
@@ -57,6 +95,7 @@ const Login = () => {
             </div>
             <div>
                 <img
+                    className="h-screen w-screen object-cover"
                     src='https://assets.nflxext.com/ffe/siteui/vlv3/a99688ca-33c3-4099-9baa-07a2e2acb398/ca15fd28-b624-4852-8bfe-9cdd5c88475d/IN-en-20240520-popsignuptwoweeks-perspective_alpha_website_medium.jpg'
                     alt="Background_Image"
                 />
